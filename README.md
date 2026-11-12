@@ -1,4 +1,4 @@
-# Lab 1 — Ordered Inventory Index (Binary Search Tree)
+# Lab 8 — Ordered Inventory Index (Binary Search Tree)
 
 CpE 211 Data Structures & Algorithms
 Workflow: **Plan → Test → Build → Audit**
