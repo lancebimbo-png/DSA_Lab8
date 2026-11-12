@@ -77,7 +77,7 @@ public class StudentBSTTest {
 
         List<Integer> inOrder = null;
         try {
-            inOrder = tree.inOrder();
+            inOrder = tree.inOrderKeys();
         } catch (UnsupportedOperationException e) {
             check("inOrder implemented", false);
             noteBlocked(e);
@@ -149,9 +149,9 @@ public class StudentBSTTest {
             check("empty height is -1", tree.height() == -1);
             check("empty get returns null", tree.get(1) == null);
             check("empty delete returns false", !tree.delete(1));
-            check("empty inOrder is empty", isEmpty(tree.inOrder()));
-            check("empty preOrder is empty", isEmpty(tree.preOrder()));
-            check("empty postOrder is empty", isEmpty(tree.postOrder()));
+            check("empty inOrder is empty", isEmpty(tree.inOrderKeys()));
+            check("empty preOrder is empty", isEmpty(tree.preOrderKeys()));
+            check("empty postOrder is empty", isEmpty(tree.postOrderKeys()));
             check("empty rangeSearch is empty", isEmpty(tree.rangeSearch(0, 100)));
         } catch (UnsupportedOperationException e) {
             check("empty-tree operations implemented", false);

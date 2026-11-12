@@ -13,9 +13,10 @@ import java.util.List;
  * Complexity: every operation is O(h); balanced typical O(log n); worst case O(n).
  * This class does NOT self-balance (no AVL / Red-Black) - that is a documented limitation.
  *
- * Approved return types:
- *   inOrder / preOrder / postOrder -&gt; List&lt;K&gt; (keys in visit order)
- *   rangeSearch(min, max)          -&gt; List&lt;V&gt; (values in ascending key order)
+ * Return types (per the lab technical contract: "Return values in named traversal order"):
+ *   inOrder / preOrder / postOrder -> List<V> (values in visit order)
+ *   inOrderKeys / preOrderKeys / postOrderKeys -> List<K> (keys in visit order, for verification)
+ *   rangeSearch(min, max)          -> List<V> (values in ascending key order)
  */
 public class BinarySearchTree<K extends Comparable<K>, V> {
 
@@ -86,8 +87,8 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
 
     /**
      * Inclusive range query [min, max]: return values whose keys satisfy
-     * min &lt;= key &lt;= max, in ascending key order.
-     * An inverted range (min &gt; max) returns an empty list.
+     * min <= key <= max, in ascending key order.
+     * An inverted range (min > max) returns an empty list.
      * Irrelevant subtrees are pruned.
      */
     public List<V> rangeSearch(K min, K max) {
@@ -190,52 +191,83 @@ public class BinarySearchTree<K extends Comparable<K>, V> {
         return node;
     }
 
-    /** Keys in left - node - right order (ascending for a valid BST). */
-    public List<K> inOrder() {
-        List<K> result = new ArrayList<K>();
-        inOrderRec(root, result);
+    /** Values in left - node - right order (ascending key order for a valid BST). */
+    public List<V> inOrder() {
+        List<V> result = new ArrayList<V>();
+        inOrderRec(root, result, null);
         return result;
     }
 
-    private void inOrderRec(BSTNode<K, V> node, List<K> result) {
+    /** Keys in left - node - right order (ascending for a valid BST). */
+    public List<K> inOrderKeys() {
+        List<K> result = new ArrayList<K>();
+        inOrderRec(root, null, result);
+        return result;
+    }
+
+    // Collects values into vals and/or keys into keys (either list may be null).
+    private void inOrderRec(BSTNode<K, V> node, List<V> vals, List<K> keys) {
         if (node == null) {
             return;
         }
-        inOrderRec(node.left, result);
-        result.add(node.key);
-        inOrderRec(node.right, result);
+        inOrderRec(node.left, vals, keys);
+        collect(node, vals, keys);
+        inOrderRec(node.right, vals, keys);
+    }
+
+    /** Values in node - left - right order. */
+    public List<V> preOrder() {
+        List<V> result = new ArrayList<V>();
+        preOrderRec(root, result, null);
+        return result;
     }
 
     /** Keys in node - left - right order. */
-    public List<K> preOrder() {
+    public List<K> preOrderKeys() {
         List<K> result = new ArrayList<K>();
-        preOrderRec(root, result);
+        preOrderRec(root, null, result);
         return result;
     }
 
-    private void preOrderRec(BSTNode<K, V> node, List<K> result) {
+    private void preOrderRec(BSTNode<K, V> node, List<V> vals, List<K> keys) {
         if (node == null) {
             return;
         }
-        result.add(node.key);
-        preOrderRec(node.left, result);
-        preOrderRec(node.right, result);
+        collect(node, vals, keys);
+        preOrderRec(node.left, vals, keys);
+        preOrderRec(node.right, vals, keys);
+    }
+
+    /** Values in left - right - node order. */
+    public List<V> postOrder() {
+        List<V> result = new ArrayList<V>();
+        postOrderRec(root, result, null);
+        return result;
     }
 
     /** Keys in left - right - node order. */
-    public List<K> postOrder() {
+    public List<K> postOrderKeys() {
         List<K> result = new ArrayList<K>();
-        postOrderRec(root, result);
+        postOrderRec(root, null, result);
         return result;
     }
 
-    private void postOrderRec(BSTNode<K, V> node, List<K> result) {
+    private void postOrderRec(BSTNode<K, V> node, List<V> vals, List<K> keys) {
         if (node == null) {
             return;
         }
-        postOrderRec(node.left, result);
-        postOrderRec(node.right, result);
-        result.add(node.key);
+        postOrderRec(node.left, vals, keys);
+        postOrderRec(node.right, vals, keys);
+        collect(node, vals, keys);
+    }
+
+    private void collect(BSTNode<K, V> node, List<V> vals, List<K> keys) {
+        if (vals != null) {
+            vals.add(node.value);
+        }
+        if (keys != null) {
+            keys.add(node.key);
+        }
     }
 
     /**

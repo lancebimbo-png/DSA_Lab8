@@ -27,6 +27,7 @@ public class LabTestRunner {
 
         testEmptyAndMissing();
         testOrderingAndTraversals();
+        testTraversalValues();
         testDuplicateReplacement();
         testRangeInclusiveEmptyInverted();
         testDeletionLeaf();
@@ -54,7 +55,7 @@ public class LabTestRunner {
             check("empty height is -1", tree.height() == -1);
             check("empty get returns null", tree.get(42) == null);
             check("empty delete returns false", !tree.delete(42));
-            check("empty inOrder empty", tree.inOrder() != null && tree.inOrder().isEmpty());
+            check("empty inOrder empty", tree.inOrderKeys() != null && tree.inOrderKeys().isEmpty());
             check("empty rangeSearch empty",
                     tree.rangeSearch(0, 100) != null && tree.rangeSearch(0, 100).isEmpty());
         } catch (UnsupportedOperationException e) {
@@ -81,6 +82,33 @@ public class LabTestRunner {
         }
     }
 
+    /**
+     * Contract: "Traversals return values in named traversal order."
+     * inOrder/preOrder/postOrder return the stored values; the *Keys variants
+     * (checked above) return the keys in the same order.
+     */
+    private static void testTraversalValues() {
+        section("Traversals return values");
+        BinarySearchTree<Integer, String> tree = new BinarySearchTree<Integer, String>();
+        check("empty inOrder values empty", tree.inOrder().isEmpty());
+        check("empty preOrder values empty", tree.preOrder().isEmpty());
+        check("empty postOrder values empty", tree.postOrder().isEmpty());
+        tree.put(50, "p50");
+        tree.put(30, "p30");
+        tree.put(70, "p70");
+        tree.put(20, "p20");
+        tree.put(40, "p40");
+        check("inOrder values ascending by key",
+                tree.inOrder().equals(Arrays.asList("p20", "p30", "p40", "p50", "p70")));
+        check("preOrder values node-left-right",
+                tree.preOrder().equals(Arrays.asList("p50", "p30", "p20", "p40", "p70")));
+        check("postOrder values left-right-node",
+                tree.postOrder().equals(Arrays.asList("p20", "p40", "p30", "p70", "p50")));
+        tree.put(40, "p40-new");
+        check("traversal reflects replaced value",
+                tree.inOrder().equals(Arrays.asList("p20", "p30", "p40-new", "p50", "p70")));
+    }
+
     // --- Matrix: Ordering ---
 
     private static void testOrderingAndTraversals() {
@@ -100,11 +128,11 @@ public class LabTestRunner {
         }
         try {
             check("inOrder is ascending keys",
-                    tree.inOrder().equals(Arrays.asList(20, 30, 40, 50, 70)));
+                    tree.inOrderKeys().equals(Arrays.asList(20, 30, 40, 50, 70)));
             check("preOrder is node-left-right",
-                    tree.preOrder().equals(Arrays.asList(50, 30, 20, 40, 70)));
+                    tree.preOrderKeys().equals(Arrays.asList(50, 30, 20, 40, 70)));
             check("postOrder is left-right-node",
-                    tree.postOrder().equals(Arrays.asList(20, 40, 30, 70, 50)));
+                    tree.postOrderKeys().equals(Arrays.asList(20, 40, 30, 70, 50)));
             check("size is 5", tree.size() == 5);
             check("height of this tree is 2", tree.height() == 2);
         } catch (UnsupportedOperationException e) {
@@ -128,7 +156,7 @@ public class LabTestRunner {
         try {
             check("size remains 1", tree.size() == 1);
             check("get returns latest value", "v3".equals(tree.get(5)));
-            check("inOrder has single key", tree.inOrder().equals(Arrays.asList(5)));
+            check("inOrder has single key", tree.inOrderKeys().equals(Arrays.asList(5)));
         } catch (UnsupportedOperationException e) {
             check("get/inOrder after duplicate put", false);
             blocked(e);
@@ -190,7 +218,7 @@ public class LabTestRunner {
             check("delete leaf 10 returns true", tree.delete(10));
             check("size is 7 after deleting leaf 10", tree.size() == 7);
             check("inOrder without 10",
-                    tree.inOrder().equals(Arrays.asList(20, 30, 40, 55, 60, 70, 85)));
+                    tree.inOrderKeys().equals(Arrays.asList(20, 30, 40, 55, 60, 70, 85)));
             check("get(10) is null", tree.get(10) == null);
         } catch (UnsupportedOperationException e) {
             check("delete implemented (leaf)", false);
@@ -210,7 +238,7 @@ public class LabTestRunner {
             check("delete node with only left child returns true", oneChild.delete(30));
             check("size is 2", oneChild.size() == 2);
             check("inOrder after promoting left child",
-                    oneChild.inOrder().equals(Arrays.asList(20, 50)));
+                    oneChild.inOrderKeys().equals(Arrays.asList(20, 50)));
             check("get(20) still works", "p20".equals(oneChild.get(20)));
             check("height after promote is 1", oneChild.height() == 1);
         } catch (UnsupportedOperationException e) {
@@ -249,7 +277,7 @@ public class LabTestRunner {
         check("right child remains searchable with original value", "p70".equals(tree.get(70)));
         check("size is 1 after deleting parent", tree.size() == 1);
         check("inOrder is [70] after promoting right child",
-                tree.inOrder().equals(Arrays.asList(70)));
+                tree.inOrderKeys().equals(Arrays.asList(70)));
         check("deleted parent can no longer be found", tree.get(50) == null);
     }
 
@@ -262,7 +290,7 @@ public class LabTestRunner {
             check("delete(70) returns true", tree.delete(70));
             check("size is 7", tree.size() == 7);
             check("inOrder without 70",
-                    tree.inOrder().equals(Arrays.asList(10, 20, 30, 40, 55, 60, 85)));
+                    tree.inOrderKeys().equals(Arrays.asList(10, 20, 30, 40, 55, 60, 85)));
             check("get(55) works", "p55".equals(tree.get(55)));
             check("get(60) works after successor unlink", "p60".equals(tree.get(60)));
             check("get(70) is null", tree.get(70) == null);
@@ -280,7 +308,7 @@ public class LabTestRunner {
             check("delete root 40 returns true", tree.delete(40));
             check("size is 7", tree.size() == 7);
             check("inOrder after root delete",
-                    tree.inOrder().equals(Arrays.asList(10, 20, 30, 55, 60, 70, 85)));
+                    tree.inOrderKeys().equals(Arrays.asList(10, 20, 30, 55, 60, 70, 85)));
             check("successor value get(55)", "p55".equals(tree.get(55)));
             check("successor right child get(60) preserved", "p60".equals(tree.get(60)));
             check("old root get(40) null", tree.get(40) == null);
@@ -311,7 +339,7 @@ public class LabTestRunner {
             check("sorted chain size is 5", tree.size() == 5);
             check("sorted chain height is 4 (n-1)", tree.height() == 4);
             check("sorted chain inOrder ascending",
-                    tree.inOrder().equals(Arrays.asList(1, 2, 3, 4, 5)));
+                    tree.inOrderKeys().equals(Arrays.asList(1, 2, 3, 4, 5)));
         } catch (UnsupportedOperationException e) {
             check("height/inOrder on chain", false);
             blocked(e);

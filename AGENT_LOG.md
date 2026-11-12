@@ -1,18 +1,18 @@
-# Agent Log Ã¢â‚¬â€ Lab 1: Ordered Inventory Index (BST)
+# Agent Log — Lab 1: Ordered Inventory Index (BST)
 
 **Date of work:** 2026-11-11
 **Project folder:** `.` (project root)
 **Assistant:** OpenCode (`opencode/mimo-v2.6-flash-free`)
-**Workflow:** Plan Ã¢â€ â€™ Test Ã¢â€ â€™ Build Ã¢â€ â€™ Audit
-**Current checkpoint:** AUDIT complete (PASS WITH NOTES) + post-audit test improvements complete Ã¢â‚¬â€ **ready for final Git review; not committed or pushed**
+**Workflow:** Plan → Test → Build → Audit
+**Current checkpoint:** AUDIT complete + final revision (§12) — **ready for final Git review; not committed or pushed**
 
-> **Reading note:** Ã‚Â§1Ã¢â‚¬â€œ5 are the historical PLAN, TEST, and BUILD checkpoint records, written at those checkpoints. Phrases such as Ã¢â‚¬Å“BUILD not startedÃ¢â‚¬Â or Ã¢â‚¬Å“algorithms not implementedÃ¢â‚¬Â inside Ã‚Â§1Ã¢â‚¬â€œ5 describe the project state **at that time** and are superseded by later sections (Ã‚Â§6 AUDIT). They are preserved intentionally as project history.
+> **Reading note:** §1–5 are the historical PLAN, TEST, and BUILD checkpoint records, written at those checkpoints. Phrases such as “BUILD not started” or “algorithms not implemented” inside §1–5 describe the project state **at that time** and are superseded by later sections (§6 AUDIT). They are preserved intentionally as project history.
 
 ---
 
 ## 1. Assignment understanding
 
-**Course:** CpE 211 Ã¢â‚¬â€ Data Structures & Algorithms
+**Course:** CpE 211 — Data Structures & Algorithms
 **Lecturer:** Engr. Jamie Eduardo Rosal, MSCpE
 **Primary references (read in full):**
 
@@ -28,8 +28,8 @@
 | In-order traversal | Ascending keys when invariant holds |
 | Height convention | Empty tree = **-1**; leaf = **0** |
 | Complexity | Operations **O(h)**; balanced typical **O(log n)**; worst case **O(n)** |
-| Range search | **Inclusive** bounds; ascending order; inverted range Ã¢â€ â€™ empty; prune irrelevant branches |
-| Deletion | Leaf / one-child / two-child in-order successor; preserve successorÃ¢â‚¬â„¢s **right** child when unlinking successor |
+| Range search | **Inclusive** bounds; ascending order; inverted range → empty; prune irrelevant branches |
+| Deletion | Leaf / one-child / two-child in-order successor; preserve successor’s **right** child when unlinking successor |
 | Nulls | Reject null keys/values where the contract specifies |
 | Out of scope | AVL, Red-Black, external libraries, GUI features; balancing is a **limitation to discuss**, not a requirement |
 
@@ -49,7 +49,7 @@
 | Check | Result |
 |---|---|
 | Project root | `...\vscode\Lab8` (exists; OneDrive reparse point) |
-| Contents of Lab8 | **Empty Ã¢â‚¬â€ 0 files** at plan time |
+| Contents of Lab8 | **Empty — 0 files** at plan time |
 | Starter `src/` / `test/` / `LabTestRunner` | **Not present** in Lab8 |
 | `BSTNode.java`, `BinarySearchTree.java` anywhere on profile | **Not found** |
 | Assignment docs | Found and read under `Downloads` |
@@ -63,21 +63,21 @@ The lab document states that starter `src/` files intentionally contain TODOs an
 
 ---
 
-## 3. Initial implementation plan (Plan checkpoint Ã¢â‚¬â€ approved)
+## 3. Initial implementation plan (Plan checkpoint — approved)
 
 ### Approved project structure
 
 ```
 Lab8/
-Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ src/
-Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ BSTNode.java
-Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ BinarySearchTree.java
-Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ test/
-Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ LabTestRunner.java
-Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ StudentBSTTest.java
-Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ run-tests.bat
-Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ AGENT_LOG.md
-Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ README.md
+├── src/
+│   ├── BSTNode.java
+│   └── BinarySearchTree.java
+├── test/
+│   ├── LabTestRunner.java
+│   └── StudentBSTTest.java
+├── run-tests.bat
+├── AGENT_LOG.md
+└── README.md
 ```
 
 ### Approved API return types (student decision)
@@ -90,12 +90,12 @@ Lab8/
 | `rangeSearch(min, max)` | `List<V>` | **Product values** in ascending key order |
 | `put` / `get` / `delete` / `height` / `size` | per contract | As in technical contract table above |
 
-**Documented interpretation:** Traversal methods return **keys** in their visit orders (lab language: ascending prices). Range search returns **values** (products) ordered by ascending key. This matches the studentÃ¢â‚¬â„¢s approval message and the lab scenario (price = key, product data = value).
+**Documented interpretation:** Traversal methods return **keys** in their visit orders (lab language: ascending prices). Range search returns **values** (products) ordered by ascending key. This matches the student’s approval message and the lab scenario (price = key, product data = value).
 
-### Strategy (approved at PLAN; executed during BUILD Ã‚Â§5)
+### Strategy (approved at PLAN; executed during BUILD §5)
 
 1. Implement `put` / `get` with null rejection and duplicate replacement.
-2. Implement in-order range walk with pruning; inverted range Ã¢â€ â€™ empty.
+2. Implement in-order range walk with pruning; inverted range → empty.
 3. Implement `delete` for leaf, one-child, two-child successor (copy successor, then unlink successor; **reattach successor.right**), and root.
 4. Implement traversals and `height` (empty = -1).
 5. Maintain `size` on put (insert only) and successful delete.
@@ -128,7 +128,7 @@ Lab8/
 | 8 | 60 | >40, <70, >55 | 55.right |
 
 - Leaves: 10, 30, 60, 85
-- **height = 3** (edges on 40Ã¢â€ â€™70Ã¢â€ â€™55Ã¢â€ â€™60)
+- **height = 3** (edges on 40→70→55→60)
 - inOrder: `10, 20, 30, 40, 55, 60, 70, 85`
 - preOrder: `40, 20, 10, 30, 70, 55, 60, 85`
 - postOrder: `10, 30, 20, 60, 55, 85, 70, 40`
@@ -136,11 +136,11 @@ Lab8/
 
 **Delete root 40:**
 
-1. Two children Ã¢â€ â€™ successor = min of right subtree.
-2. From 70 go left Ã¢â€ â€™ **55** (55.left == null).
+1. Two children → successor = min of right subtree.
+2. From 70 go left → **55** (55.left == null).
 3. **Why 55:** next key in ascending order after 40.
-4. **60 is 55Ã¢â‚¬â„¢s right child** Ã¢â€ â€™ must reattach when 55 is removed.
-5. Copy 55 into root; delete 55 from old place (one-child) Ã¢â€ â€™ **70.left = 60**.
+4. **60 is 55’s right child** → must reattach when 55 is removed.
+5. Copy 55 into root; delete 55 from old place (one-child) → **70.left = 60**.
 
 ```
             55
@@ -150,11 +150,11 @@ Lab8/
      10   30  60   85
 ```
 
-- size = 7, **height = 2** (longest paths 55Ã¢â€ â€™20Ã¢â€ â€™10 and 55Ã¢â€ â€™70Ã¢â€ â€™60 have **2 edges**; empty=-1, leaf=0)
+- size = 7, **height = 2** (longest paths 55→20→10 and 55→70→60 have **2 edges**; empty=-1, leaf=0)
 - inOrder: `10, 20, 30, 55, 60, 70, 85`
 - **Bug guarded against:** dropping 60 when unlinking 55
 
-> **Correction (TEST checkpoint):** An earlier draft of this log and the tests incorrectly recorded post-delete height as **3** (that value is the height of the tree *before* deleting 40: path 40Ã¢â€ â€™70Ã¢â€ â€™55Ã¢â€ â€™60). After root deletion the deepest path loses one edge Ã¢â€ â€™ height **2**. See Ã‚Â§4.1.
+> **Correction (TEST checkpoint):** An earlier draft of this log and the tests incorrectly recorded post-delete height as **3** (that value is the height of the tree *before* deleting 40: path 40→70→55→60). After root deletion the deepest path loses one edge → height **2**. See §4.1.
 
 **rangeSearch(25, 60) inclusive:**
 
@@ -163,7 +163,7 @@ Lab8/
 | After inserts only | 30, 40, 55, 60 | p30, p40, p55, p60 |
 | After delete 40 | 30, 55, 60 | p30, p55, p60 |
 
-Acceptance and student range tests use a **fresh insert-only tree** for the labÃ¢â‚¬â„¢s `rangeSearch(25, 60)` trace to avoid ambiguity with the post-delete tree.
+Acceptance and student range tests use a **fresh insert-only tree** for the lab’s `rangeSearch(25, 60)` trace to avoid ambiguity with the post-delete tree.
 
 ---
 
@@ -171,7 +171,7 @@ Acceptance and student range tests use a **fresh insert-only tree** for the lab�
 
 ### 4.1 Height assertion correction (student-found before BUILD)
 
-**Status update (removal verification):** The student requested confirmation that the old `height == 3` assertions were removed rather than left beside the corrected ones. Grep of `test/StudentBSTTest.java` and `test/LabTestRunner.java` for `== 3`, `height is 3`, and `height remains 3` Ã¢â€ â€™ **0 matches in executable code**. Each file contains exactly one post-delete height assertion, both expecting **2**. (Details under Ã¢â‚¬Å“Old assertions removedÃ¢â‚¬Â below.)
+**Status update (removal verification):** The student requested confirmation that the old `height == 3` assertions were removed rather than left beside the corrected ones. Grep of `test/StudentBSTTest.java` and `test/LabTestRunner.java` for `== 3`, `height is 3`, and `height remains 3` → **0 matches in executable code**. Each file contains exactly one post-delete height assertion, both expecting **2**. (Details under “Old assertions removed” below.)
 
 **Original incorrect expectation (in `StudentBSTTest` and `LabTestRunner`):**
 
@@ -179,7 +179,7 @@ Acceptance and student range tests use a **fresh insert-only tree** for the lab�
 assert t.height() == 3;   // WRONG after delete(40)
 ```
 
-**Why it was incorrect:** Height 3 was measured on the tree *before* deleting root 40 (path `40 Ã¢â€ â€™ 70 Ã¢â€ â€™ 55 Ã¢â€ â€™ 60` has 3 edges). After a correct delete:
+**Why it was incorrect:** Height 3 was measured on the tree *before* deleting root 40 (path `40 → 70 → 55 → 60` has 3 edges). After a correct delete:
 
 ```
             55
@@ -189,7 +189,7 @@ assert t.height() == 3;   // WRONG after delete(40)
      10   30  60   85
 ```
 
-Longest root-to-leaf paths: `55 Ã¢â€ â€™ 20 Ã¢â€ â€™ 10` and `55 Ã¢â€ â€™ 70 Ã¢â€ â€™ 60` Ã¢â‚¬â€ **2 edges**.
+Longest root-to-leaf paths: `55 → 20 → 10` and `55 → 70 → 60` — **2 edges**.
 With the package convention (empty = -1, leaf = 0), **height = 2**.
 
 **Corrected assertion:**
@@ -200,8 +200,8 @@ assert t.height() == 2;
 
 **Old assertions removed (not supplemented):** A follow-up verification by the student suspected that the original `height == 3` checks might still sit beside the corrected ones. A grep of both test files for `== 3`, `height is 3`, and `height remains 3` returned **no matches**. The earlier correction edits replaced the assertion lines in place:
 
-- `test/StudentBSTTest.java`: `check("height is 3", height == 3);` Ã¢â€ â€™ **removed**; only `check("height is 2", height == 2);` remains (line 115).
-- `test/LabTestRunner.java`: `check("height remains 3", tree.height() == 3);` Ã¢â€ â€™ **removed**; only `check("height after root delete is 2", tree.height() == 2);` remains (line 263 at TEST time; now 288).
+- `test/StudentBSTTest.java`: `check("height is 3", height == 3);` → **removed**; only `check("height is 2", height == 2);` remains (line 115).
+- `test/LabTestRunner.java`: `check("height remains 3", tree.height() == 3);` → **removed**; only `check("height after root delete is 2", tree.height() == 2);` remains (line 263 at TEST time; now 288).
 
 Executable height expectations after `delete(40)` in the test files are **exactly one check each, expecting 2**. Remaining `3` mentions are comments/historical notes only.
 
@@ -209,8 +209,8 @@ Executable height expectations after `delete(40)` in the test files are **exactl
 
 | File | Change |
 |------|--------|
-| `test/StudentBSTTest.java` | `height is 3` line **deleted**, replaced by `height is 2` (+ comment) Ã¢â‚¬â€ single assertion only |
-| `test/LabTestRunner.java` | `height remains 3` line **deleted**, replaced by `height after root delete is 2` (+ comment) Ã¢â‚¬â€ single assertion only |
+| `test/StudentBSTTest.java` | `height is 3` line **deleted**, replaced by `height is 2` (+ comment) — single assertion only |
+| `test/LabTestRunner.java` | `height remains 3` line **deleted**, replaced by `height after root delete is 2` (+ comment) — single assertion only |
 | `README.md` | post-delete height documented as `2` |
 | `AGENT_LOG.md` | this section; post-delete height corrected to 2; removal verified by grep |
 
@@ -226,14 +226,14 @@ Executable height expectations after `delete(40)` in the test files are **exactl
 | `height()` | **`2`** | **corrected** |
 | second `delete(40)` | `false` | unchanged |
 
-*(Historical: as of the TEST checkpoint no BST algorithms existed yet Ã¢â‚¬â€ see Ã‚Â§5 for their later implementation.)*
+*(Historical: as of the TEST checkpoint no BST algorithms existed yet — see §5 for their later implementation.)*
 
 ### 4.2 Sequence followed (per student approval)
 
 1. Created `test/StudentBSTTest.java` (student-authored) **first**.
 2. Created minimal compileable skeletons: `src/BSTNode.java`, `src/BinarySearchTree.java`.
-3. **Did not implement BST algorithms** Ã¢â‚¬â€ every public operation throws `UnsupportedOperationException("TODO: ... not implemented")`.
-4. Created `test/LabTestRunner.java` Ã¢â‚¬â€ **clearly labeled agent-authored**, cases derived from the professorÃ¢â‚¬â„¢s acceptance-test matrix (not an instructor file).
+3. **Did not implement BST algorithms** — every public operation throws `UnsupportedOperationException("TODO: ... not implemented")`.
+4. Created `test/LabTestRunner.java` — **clearly labeled agent-authored**, cases derived from the professor’s acceptance-test matrix (not an instructor file).
 5. Compiled and executed both suites.
 6. Recorded **actual** output below (no fabrication).
 7. Wrote this log and `README.md` / `run-tests.bat`.
@@ -250,21 +250,21 @@ Executable height expectations after `delete(40)` in the test files are **exactl
 | `README.md` | Structure, API decisions, commands |
 | `AGENT_LOG.md` | This log |
 
-### 4.4 Student-authored test Ã¢â‚¬â€ why selected
+### 4.4 Student-authored test — why selected
 
-**Primary case:** root deletion where the **in-order successor has a right child** (lab checklist: Ã¢â‚¬Å“successor right childÃ¢â‚¬Â).
+**Primary case:** root deletion where the **in-order successor has a right child** (lab checklist: “successor right child”).
 
 - Inserts prescribed sequence `40, 20, 70, 10, 30, 55, 85, 60`
-- `delete(40)` Ã¢â€ â€™ true
-- size Ã¢â€ â€™ 7
-- inOrder Ã¢â€ â€™ `[10, 20, 30, 55, 60, 70, 85]`
+- `delete(40)` → true
+- size → 7
+- inOrder → `[10, 20, 30, 55, 60, 70, 85]`
 - `get(55)`, `get(60)` return stored values
-- height Ã¢â€ â€™ **2** (corrected from erroneous 3; see Ã‚Â§4.1)
-- second `delete(40)` Ã¢â€ â€™ false
+- height → **2** (corrected from erroneous 3; see §4.1)
+- second `delete(40)` → false
 
 **Also included:** duplicate replacement without size increase; empty-tree behavior; inverted `rangeSearch`; inclusive boundaries on a fresh tree.
 
-**Rationale:** Combines two-child **root** delete with successor **60** reattachment Ã¢â‚¬â€ the classic pointer-repair failure the lab targets Ã¢â‚¬â€ in one scenario that the acceptance suite also covers from the matrix angle.
+**Rationale:** Combines two-child **root** delete with successor **60** reattachment — the classic pointer-repair failure the lab targets — in one scenario that the acceptance suite also covers from the matrix angle.
 
 ### 4.5 Exact commands run
 
@@ -277,7 +277,7 @@ java -ea -cp out StudentBSTTest
 
 (Also available as `run-tests.bat`.)
 
-### 4.6 Actual initial test output (TEST checkpoint Ã¢â‚¬â€ honest record)
+### 4.6 Actual initial test output (TEST checkpoint — honest record)
 
 **Compile:** `javac` exit code **0** (skeletons compile).
 
@@ -288,7 +288,7 @@ java -ea -cp out StudentBSTTest
 | LabTestRunner | **0** | **9** | **1** | `TODO: ... not implemented` |
 | StudentBSTTest | **0** | **5** | **1** | `TODO: ... not implemented` |
 
-Same totals as the first run: failures still identify missing TODO methods only (not height-assertion issues Ã¢â‚¬â€ those never execute because `put` throws first).
+Same totals as the first run: failures still identify missing TODO methods only (not height-assertion issues — those never execute because `put` throws first).
 
 **Post-correction re-run #2 (removal verification + fresh compile/run):**
 
@@ -306,7 +306,7 @@ java -ea -cp out StudentBSTTest
 | `java -ea -cp out LabTestRunner` | **1** |
 | `java -ea -cp out StudentBSTTest` | **1** |
 
-Actual results: **LabTestRunner 0 passed, 9 failed**; **StudentBSTTest 0 passed, 5 failed** Ã¢â‚¬â€ every failure `blocked by: TODO: ... not implemented`. No height-3 assertion errors (none exist). *(State at TEST checkpoint: skeleton stubs only; implementation followed in Ã‚Â§5.)*
+Actual results: **LabTestRunner 0 passed, 9 failed**; **StudentBSTTest 0 passed, 5 failed** — every failure `blocked by: TODO: ... not implemented`. No height-3 assertion errors (none exist). *(State at TEST checkpoint: skeleton stubs only; implementation followed in §5.)*
 
 **LabTestRunner (agent-authored acceptance):** exit code **1**
 
@@ -380,11 +380,11 @@ Exception in thread "main" java.lang.AssertionError: 5 student test(s) failed
 | Suite | Passed | Failed | Exit | Intended reason |
 |-------|--------|--------|------|-----------------|
 | LabTestRunner (acceptance) | **0** | **9** | 1 | Skeleton throws `TODO: ... not implemented` |
-| StudentBSTTest (student) | **0** | **5** | 1 | Same Ã¢â‚¬â€ missing BUILD algorithms |
+| StudentBSTTest (student) | **0** | **5** | 1 | Same — missing BUILD algorithms |
 
 **No tests were weakened, deleted, or modified to force a result.**
 **No claim of passing tests at TEST checkpoint.**
-*(Historical)* Failures exposed the missing implementation exactly as required before BUILD; BUILD results are in Ã‚Â§5.4.
+*(Historical)* Failures exposed the missing implementation exactly as required before BUILD; BUILD results are in §5.4.
 
 ### 4.8 Test-coverage notes vs acceptance matrix
 
@@ -394,17 +394,17 @@ Exception in thread "main" java.lang.AssertionError: 5 student test(s) failed
 | Ordering + traversals | Yes | In-order after delete |
 | Duplicate replacement | Yes | Yes |
 | Range inclusive / empty / inverted | Yes | Inverted + inclusive |
-| Deletion leaf | Yes | Ã¢â‚¬â€ |
-| Deletion one child | Yes | Ã¢â‚¬â€ |
+| Deletion leaf | Yes | — |
+| Deletion one child | Yes | — |
 | Deletion two children | Yes | Via root/successor path |
 | Deletion root + successor right child | Yes | **Primary case** |
-| Degenerate sorted chain height | Yes | Ã¢â‚¬â€ |
+| Degenerate sorted chain height | Yes | — |
 
 ---
 
 ## 5. BUILD checkpoint (executed)
 
-**Date:** 2026-11-11 Ã‚Â· **Authorization:** student approval to implement BST algorithms.
+**Date:** 2026-11-11 · **Authorization:** student approval to implement BST algorithms.
 
 ### 5.1 Files and methods implemented
 
@@ -420,14 +420,14 @@ Methods implemented (signatures unchanged from skeleton/approved API):
 | `put(K, V)` | Recursive `putRec`; null key/value rejected with `NullPointerException`; equality replaces `node.value` in place; `count++` only on new node creation |
 | `get(K)` | Recursive `getRec`; null key rejected; returns `null` at empty slot |
 | `delete(K)` | Recursive `deleteRec` returning repaired subtree; `boolean[] removed` flag; `count--` exactly once when found |
-| `rangeSearch(K, K)` | Inverted-range short-circuit Ã¢â€ â€™ empty list; recursive `rangeRec` with pruning (left only if `min < node.key`, right only if `max > node.key`, collect when inside bounds) |
+| `rangeSearch(K, K)` | Inverted-range short-circuit → empty list; recursive `rangeRec` with pruning (left only if `min < node.key`, right only if `max > node.key`, collect when inside bounds) |
 | `inOrder()` / `preOrder()` / `postOrder()` | Recursive collectors into `ArrayList<K>` |
-| `height()` | Recursive `heightRec`: `null Ã¢â€ â€™ -1`, else `1 + max(children)` |
+| `height()` | Recursive `heightRec`: `null → -1`, else `1 + max(children)` |
 | `size()` | Returns maintained `count` |
 
 Private helpers added: `putRec`, `getRec`, `rangeRec`, `deleteRec`, `minNode`, `deleteMin`, `inOrderRec`, `preOrderRec`, `postOrderRec`, `heightRec`.
 
-**Tests were not modified** during BUILD Ã¢â‚¬â€ `test/LabTestRunner.java` and `test/StudentBSTTest.java` are byte-for-byte the corrected TEST versions.
+**Tests were not modified** during BUILD — `test/LabTestRunner.java` and `test/StudentBSTTest.java` are byte-for-byte the corrected TEST versions.
 
 ### 5.2 Important algorithm decisions
 
@@ -442,15 +442,15 @@ node.right = deleteMin(node.right);              // unlink successor from old po
 ```
 
 - **Why copy-then-unlink:** preserves the ordering invariant at every ancestor without threading parent pointers; only the recursion stack holds structure context.
-- **Successor's right child:** `deleteMin` returns `node.right` when `node.left == null`, so if the successor had a right child it is **promoted into the successor's former slot** Ã¢â‚¬â€ never dropped. This is exactly the lab's "successor right child" requirement (delete 40 Ã¢â€ â€™ successor 55 Ã¢â€ â€™ 60 reattaches under 70).
-- **Leaf / one-child:** `return node.right` when `left == null`, else `return node.left` Ã¢â‚¬â€ covers leaf (both null Ã¢â€ â€™ returns null) and one-child promotion with one branch.
+- **Successor's right child:** `deleteMin` returns `node.right` when `node.left == null`, so if the successor had a right child it is **promoted into the successor's former slot** — never dropped. This is exactly the lab's "successor right child" requirement (delete 40 → successor 55 → 60 reattaches under 70).
+- **Leaf / one-child:** `return node.right` when `left == null`, else `return node.left` — covers leaf (both null → returns null) and one-child promotion with one branch.
 - **Root:** `root = deleteRec(root, ...)` reassigns the root reference; no special-case code needed.
 - **Missing key:** recursion hits `null`, `removed[0]` stays false, `count` unchanged, returns `false`.
 - **Size discipline:** flag-based decrement avoids double-counting; `put` increments only inside the `node == null` creation branch, so duplicate replacement cannot increase size.
 
-**Range pruning:** three conditions instead of one recursive walk Ã¢â‚¬â€ skips a subtree only when it cannot overlap `[min, max]`; results collected in-order Ã¢â€ â€™ ascending key order for free.
+**Range pruning:** three conditions instead of one recursive walk — skips a subtree only when it cannot overlap `[min, max]`; results collected in-order → ascending key order for free.
 
-**Null contract:** `put` rejects null key and value; `get`/`delete` reject null key; `rangeSearch` rejects null bounds Ã¢â‚¬â€ all via `NullPointerException` with method-named messages (standard Java collection behavior).
+**Null contract:** `put` rejects null key and value; `get`/`delete` reject null key; `rangeSearch` rejects null bounds — all via `NullPointerException` with method-named messages (standard Java collection behavior).
 
 ### 5.3 Actual compile and test commands
 
@@ -461,7 +461,7 @@ java -ea -cp out LabTestRunner
 java -ea -cp out StudentBSTTest
 ```
 
-### 5.4 Actual test results (BUILD checkpoint Ã¢â‚¬â€ executed on this machine)
+### 5.4 Actual test results (BUILD checkpoint — executed on this machine)
 
 | Command | Exit code |
 |---------|-----------|
@@ -500,7 +500,7 @@ StudentBSTTest results: 24 passed, 0 failed
 ### 5.5 Implementation issues encountered and fixes
 
 1. **Typo in `deleteMin` during drafting:** wrote an invalid placeholder line (`return node.node == null ? node : node;`) instead of `return node;`. Caught by self-review of the diff before the first compile; corrected immediately. The first `javac` run then succeeded with exit 0.
-2. **No test failures at first execution** Ã¢â‚¬â€ all 72 checks passed on the first post-implementation run. No expected test results were changed.
+2. **No test failures at first execution** — all 72 checks passed on the first post-implementation run. No expected test results were changed.
 3. **Height assertion (pre-BUILD correction):** the previously corrected `height == 2` expectation matched implementation behavior exactly; no adjustment needed.
 
 ### 5.6 Build-phase restrictions honored
@@ -515,39 +515,39 @@ StudentBSTTest results: 24 passed, 0 failed
 
 ## 6. AUDIT checkpoint (completed)
 
-**Date:** 2026-11-11 Ã‚Â· **Mode:** read-only audit (no files modified during the audit itself)
-**Overall result:** **PASS WITH NOTES** Ã¢â‚¬â€ no correctness defects found.
+**Date:** 2026-11-11 · **Mode:** read-only audit (no files modified during the audit itself)
+**Overall result:** **PASS WITH NOTES** — no correctness defects found.
 
 ### 6.1 Audit scope and evidence
 
 - Inspected actual current files: `src/BSTNode.java`, `src/BinarySearchTree.java`, both test suites, `run-tests.bat`, `README.md`, this log.
-- Re-ran verification at audit time (actual exit codes): `javac` **0**; `LabTestRunner` **48 passed, 0 failed**, exit **0**; `StudentBSTTest` **24 passed, 0 failed**, exit **0**; `cmd /c run-tests.bat` exit **0** (Ã¢â‚¬Å“All test suites passed.Ã¢â‚¬Â).
-- Source SHA-256 captured at audit time matched the BUILD state (see Ã‚Â§6.4 post-audit hash check).
+- Re-ran verification at audit time (actual exit codes): `javac` **0**; `LabTestRunner` **48 passed, 0 failed**, exit **0**; `StudentBSTTest` **24 passed, 0 failed**, exit **0**; `cmd /c run-tests.bat` exit **0** (“All test suites passed.”).
+- Source SHA-256 captured at audit time matched the BUILD state (see §6.4 post-audit hash check).
 
 ### 6.2 Audit findings recorded
 
-**A. Correctness Ã¢â‚¬â€ PASS.** All contract behaviors verified by inspection + tests: generics/Comparable ordering, put insert & duplicate replace (size unchanged), get value-or-null, all five deletion cases (leaf / one-child / two-child successor / root / missing), successor right-child reattachment via `deleteMin`, inclusive pruned range, inverted range empty, three traversals, height convention (empty Ã¢Ë†â€™1 / leaf 0), O(1) stored count.
+**A. Correctness — PASS.** All contract behaviors verified by inspection + tests: generics/Comparable ordering, put insert & duplicate replace (size unchanged), get value-or-null, all five deletion cases (leaf / one-child / two-child successor / root / missing), successor right-child reattachment via `deleteMin`, inclusive pruned range, inverted range empty, three traversals, height convention (empty −1 / leaf 0), O(1) stored count.
 
-**B. Edge cases Ã¢â‚¬â€ two coverage gaps (findings, not defects):**
+**B. Edge cases — two coverage gaps (findings, not defects):**
 
 1. **Gap A:** deleting the **only node** was not explicitly tested in either suite (correct by inspection).
 2. **Gap B:** one-child deletion was tested only for a **left child**; the **right-child-only** promotion path was untested (correct by inspection).
 
-**C. Complexity Ã¢â‚¬â€ verified:** put/get/delete **O(h)**; rangeSearch **O(h + k)** typical, O(n) worst (pruned in-order); traversals **O(n)**; height **O(n)** (no cached height); size **O(1)** (stored count). Balanced tree h = O(log n); sorted unbalanced insert h = nÃ¢Ë†â€™1 = O(n) (empirically: 5 sorted inserts Ã¢â€ â€™ height 4). No self-balancing claimed Ã¢â‚¬â€ documented limitation.
+**C. Complexity — verified:** put/get/delete **O(h)**; rangeSearch **O(h + k)** typical, O(n) worst (pruned in-order); traversals **O(n)**; height **O(n)** (no cached height); size **O(1)** (stored count). Balanced tree h = O(log n); sorted unbalanced insert h = n−1 = O(n) (empirically: 5 sorted inserts → height 4). No self-balancing claimed — documented limitation.
 
-**D. Tests Ã¢â‚¬â€ PASS** at audit time 48 + 24 = 72/72. Trivial note: dead unused tree setup in `testDeletionOneChild` (`LabTestRunner.java`, original lines ~202Ã¢â‚¬â€œ212).
+**D. Tests — PASS** at audit time 48 + 24 = 72/72. Trivial note: dead unused tree setup in `testDeletionOneChild` (`LabTestRunner.java`, original lines ~202–212).
 
-**E. Documentation Ã¢â‚¬â€ PASS WITH NOTES:** README/AGENT_LOG results matched reality; workflow status tables still read Ã¢â‚¬Å“AUDIT: Not startedÃ¢â‚¬Â (correct pre-audit; updated post-audit Ã¢â‚¬â€ see Ã‚Â§9).
+**E. Documentation — PASS WITH NOTES:** README/AGENT_LOG results matched reality; workflow status tables still read “AUDIT: Not started” (correct pre-audit; updated post-audit — see §9).
 
 ### 6.3 Post-audit improvements (authorized BUILD mode)
 
 **Changes (tests + docs only; `src/` untouched):**
 
-1. **Task 1 Ã¢â‚¬â€ added two deletion tests** to `test/LabTestRunner.java` (coverage gaps A and B):
-   - `testDeleteOnlyNode()` Ã¢â‚¬â€ insert one key Ã¢â€ â€™ delete Ã¢â€ â€™ true; size 0; height Ã¢Ë†â€™1; get null; second delete false. *(5 checks)*
-   - `testDeleteRightChildOnly()` Ã¢â‚¬â€ parent with only a right child Ã¢â€ â€™ delete Ã¢â€ â€™ true; right child searchable with original value; size 1; inOrder `[70]`; parent not found. *(5 checks)*
-2. **Task 2 Ã¢â‚¬â€ removed dead setup** in `testDeletionOneChild()`: deleted only the unused `tree` variable + try/catch that no assertion read. The real one-child test (`oneChild`, 50/30/20, delete 30) and **all 5 original assertions unchanged**.
-3. **Task 5 Ã¢â‚¬â€ documentation:** this section; workflow status Ã¢â€ â€™ AUDIT Complete (Ã‚Â§9); README status/totals corrected.
+1. **Task 1 — added two deletion tests** to `test/LabTestRunner.java` (coverage gaps A and B):
+   - `testDeleteOnlyNode()` — insert one key → delete → true; size 0; height −1; get null; second delete false. *(5 checks)*
+   - `testDeleteRightChildOnly()` — parent with only a right child → delete → true; right child searchable with original value; size 1; inOrder `[70]`; parent not found. *(5 checks)*
+2. **Task 2 — removed dead setup** in `testDeletionOneChild()`: deleted only the unused `tree` variable + try/catch that no assertion read. The real one-child test (`oneChild`, 50/30/20, delete 30) and **all 5 original assertions unchanged**.
+3. **Task 5 — documentation:** this section; workflow status → AUDIT Complete (§9); README status/totals corrected.
 
 **Not done (per rules):** no `src/` changes (including `getRoot`/`getCount` kept), no existing assertions removed or weakened, no dependencies, no Git operations.
 
@@ -556,9 +556,9 @@ StudentBSTTest results: 24 passed, 0 failed
 | Command | Exit code |
 |---------|-----------|
 | `javac -d out src\*.java test\*.java` | **0** |
-| `java -ea -cp out LabTestRunner` | **0** Ã¢â‚¬â€ **58 passed, 0 failed** |
-| `java -ea -cp out StudentBSTTest` | **0** Ã¢â‚¬â€ **24 passed, 0 failed** |
-| `cmd /c run-tests.bat` | **0** Ã¢â‚¬â€ Ã¢â‚¬Å“All test suites passed.Ã¢â‚¬Â |
+| `java -ea -cp out LabTestRunner` | **0** — **58 passed, 0 failed** |
+| `java -ea -cp out StudentBSTTest` | **0** — **24 passed, 0 failed** |
+| `cmd /c run-tests.bat` | **0** — “All test suites passed.” |
 
 **Combined: 58 + 24 = 82 passed, 0 failed.** New sections in output: `-- Deletion - only node --` (5 PASS) and `-- Deletion - one child (right only) --` (5 PASS). All 48 prior acceptance checks and all 24 student checks still pass unchanged.
 
@@ -566,25 +566,25 @@ StudentBSTTest results: 24 passed, 0 failed
 
 | File | SHA-256 | Match vs audit? |
 |------|---------|-----------------|
-| `src/BSTNode.java` | `626024A91CB268C3E6D6AFFB61A2BB5B3203E1E219443DBC434968518C06A86D` | Ã¢Å“â€¦ identical |
-| `src/BinarySearchTree.java` | `7EFD927E9D541FB8F10D6A57381999D72A4B1911BCFEA1E8F5213935AC3C0632` | Ã¢Å“â€¦ identical |
+| `src/BSTNode.java` | `626024A91CB268C3E6D6AFFB61A2BB5B3203E1E219443DBC434968518C06A86D` | ✅ identical |
+| `src/BinarySearchTree.java` | `7EFD927E9D541FB8F10D6A57381999D72A4B1911BCFEA1E8F5213935AC3C0632` | ✅ identical |
 
 ---
 
 ## 7. Design decisions (meaningful agent / student decisions)
 
-1. **Scaffold from contract** Ã¢â‚¬â€ no starter existed; student authorized empty-Lab8 scaffold; stop-if-found rule honored (Lab8 re-verified empty before writes).
-2. **Return types** Ã¢â‚¬â€ student-approved: traversals `List<K>`, range `List<V>`; documented in README and here.
-3. **Skeleton failure mode** Ã¢â‚¬â€ `UnsupportedOperationException` with `TODO:` messages so failures clearly mean Ã¢â‚¬Å“not implemented,Ã¢â‚¬Â not Ã¢â‚¬Å“wrong logic.Ã¢â‚¬Â
-4. **Two test files** Ã¢â‚¬â€ acceptance (`LabTestRunner`, agent-authored, matrix) kept separate from `StudentBSTTest` (student-authored) so neither is weakened to help the other.
-5. **Exception-aware checks** Ã¢â‚¬â€ both runners catch `UnsupportedOperationException`, print `blocked by: ...`, and count FAIL; avoids a single uncaught throw hiding later cases.
-6. **No balancing code** Ã¢â‚¬â€ limitation reserved for AUDIT, per lab.
-7. **No JUnit/Maven** Ã¢â‚¬â€ plain `javac` + `java -ea`, consistent with Labs 3Ã¢â‚¬â€œ6.
-8. **rangeSearch(25,60) tested on fresh insert-only tree** Ã¢â‚¬â€ lab order (insert then delete) makes post-delete expected set different; avoids false failures from tree-state ambiguity.
-9. **LabTestRunner labeled agent-authored** in file header and README Ã¢â‚¬â€ honesty about provenance (no instructor file was supplied).
-10. **BUILD: copy-then-unlink two-child delete** Ã¢â‚¬â€ successor content copied into deleted node, `deleteMin` promotes successor's right child; no parent pointers needed (Ã‚Â§5.2).
-11. **BUILD: flag-array `removed` in recursion** Ã¢â‚¬â€ single `count--` after top-level delete regardless of recursion depth (Ã‚Â§5.2).
-12. **BUILD: null rejection via `NullPointerException` with method-named messages** Ã¢â‚¬â€ matches Java collection norms (Ã‚Â§5.2).
+1. **Scaffold from contract** — no starter existed; student authorized empty-Lab8 scaffold; stop-if-found rule honored (Lab8 re-verified empty before writes).
+2. **Return types** — student-approved: traversals `List<K>`, range `List<V>`; documented in README and here.
+3. **Skeleton failure mode** — `UnsupportedOperationException` with `TODO:` messages so failures clearly mean “not implemented,” not “wrong logic.”
+4. **Two test files** — acceptance (`LabTestRunner`, agent-authored, matrix) kept separate from `StudentBSTTest` (student-authored) so neither is weakened to help the other.
+5. **Exception-aware checks** — both runners catch `UnsupportedOperationException`, print `blocked by: ...`, and count FAIL; avoids a single uncaught throw hiding later cases.
+6. **No balancing code** — limitation reserved for AUDIT, per lab.
+7. **No JUnit/Maven** — plain `javac` + `java -ea`, consistent with Labs 3–6.
+8. **rangeSearch(25,60) tested on fresh insert-only tree** — lab order (insert then delete) makes post-delete expected set different; avoids false failures from tree-state ambiguity.
+9. **LabTestRunner labeled agent-authored** in file header and README — honesty about provenance (no instructor file was supplied).
+10. **BUILD: copy-then-unlink two-child delete** — successor content copied into deleted node, `deleteMin` promotes successor's right child; no parent pointers needed (§5.2).
+11. **BUILD: flag-array `removed` in recursion** — single `count--` after top-level delete regardless of recursion depth (§5.2).
+12. **BUILD: null rejection via `NullPointerException` with method-named messages** — matches Java collection norms (§5.2).
 
 ---
 
@@ -592,18 +592,18 @@ StudentBSTTest results: 24 passed, 0 failed
 
 | # | Decision | Rationale |
 |---|----------|-----------|
-| P1 | Plan mode first: inspect docs + empty workspace; no writes | Professor Plan Ã¢â€ â€™ Test Ã¢â€ â€™ Build Ã¢â€ â€™ Audit |
-| P2 | Challenge Ã¢â‚¬Å“donÃ¢â‚¬â„¢t assume emptyÃ¢â‚¬Â vs reality (0 files) | Truthful inspection; no invented starter |
+| P1 | Plan mode first: inspect docs + empty workspace; no writes | Professor Plan → Test → Build → Audit |
+| P2 | Challenge “don’t assume empty” vs reality (0 files) | Truthful inspection; no invented starter |
 | P3 | Ask student for starter location / API choices before scaffold | Avoid wrong signatures |
 | P4 | Student: scaffold Lab8; approved return types; TEST-first sequence | Explicit authorization |
 | P5 | Student test before any algorithm code | Lab TEST checkpoint rule |
 | P6 | Record real compile/test output; exit codes 1/1 | No fabricated evidence |
 | P7 | **STOP before BUILD** *(historical; superseded by P10)* | Awaiting student approval |
-| P8 | Student found incorrect post-delete height 3 Ã¢â€ â€™ corrected to 2 | Prevented a false BUILD failure later; documented Ã‚Â§4.1 |
-| P9 | Student asked to confirm old `height == 3` lines were removed; grep verified 0 matches; re-run recorded | Honest audit of test-file state; Ã‚Â§4.1 / re-run #2 |
+| P8 | Student found incorrect post-delete height 3 → corrected to 2 | Prevented a false BUILD failure later; documented §4.1 |
+| P9 | Student asked to confirm old `height == 3` lines were removed; grep verified 0 matches; re-run recorded | Honest audit of test-file state; §4.1 / re-run #2 |
 | P10 | Student authorized BUILD: implement both src files, run tests, no Git, no AUDIT yet | Professor Build phase scope |
-| P11 | `deleteMin` typo caught by self-review before first compile | Avoided a needless compile failure; Ã‚Â§5.5 |
-| P12 | Documentation cleanup: marked Ã‚Â§1Ã¢â‚¬â€œ4 as historical, updated header/status, numbered Ã‚Â§4 subsections | Keep log truthful after BUILD without erasing history |
+| P11 | `deleteMin` typo caught by self-review before first compile | Avoided a needless compile failure; §5.5 |
+| P12 | Documentation cleanup: marked §1–4 as historical, updated header/status, numbered §4 subsections | Keep log truthful after BUILD without erasing history |
 | P13 | AUDIT run read-only; findings reported, not fixed during audit | Professor audit-scope rule |
 | P14 | Post-audit: added only the two gap-closing tests (`testDeleteOnlyNode`, `testDeleteRightChildOnly`); removed only dead test setup; `src/` hash-verified unchanged | Close audit notes B/D without touching implementation or weakening tests |
 
@@ -613,37 +613,102 @@ StudentBSTTest results: 24 passed, 0 failed
 
 | Checkpoint | Status | Evidence |
 |------------|--------|----------|
-| PLAN | **Complete** | This log Ã‚Â§1Ã¢â‚¬â€œ3; student approved plan |
-| TEST | **Complete** | Height assertion corrected (Ã‚Â§4.1); compile OK; historical **0+0 pass, 9+5 fail** on skeleton TODOs, exit 1 |
-| BUILD | **Complete** | Ã‚Â§5: algorithms implemented; **48+24 = 72 pass, 0 fail**, all exit **0** |
-| AUDIT | **Complete** | Ã‚Â§6: **PASS WITH NOTES**; no correctness defects; 2 coverage gaps found; re-run 48+24 exit 0 |
-| POST-AUDIT | **Complete** | Ã‚Â§6.3Ã¢â‚¬â€œ6.4: gaps closed with 2 new tests; **58+24 = 82 pass, 0 fail**, all exit **0**; `src/` hashes identical to audit |
+| PLAN | **Complete** | This log §1–3; student approved plan |
+| TEST | **Complete** | Height assertion corrected (§4.1); compile OK; historical **0+0 pass, 9+5 fail** on skeleton TODOs, exit 1 |
+| BUILD | **Complete** | §5: algorithms implemented; **48+24 = 72 pass, 0 fail**, all exit **0** |
+| AUDIT | **Complete** | §6: **PASS WITH NOTES**; no correctness defects; 2 coverage gaps found; re-run 48+24 exit 0 |
+| POST-AUDIT | **Complete** | §6.3–6.4: gaps closed with 2 new tests; **58+24 = 82 pass, 0 fail**, all exit **0**; `src/` hashes identical to audit |
 
-**Final status:** Project is **ready for final Git review**. **No Git operations have been performed Ã¢â‚¬â€ nothing committed or pushed.**
+**Final status:** Project is **ready for final Git review**. **No Git operations have been performed — nothing committed or pushed.**
 
 ---
 
-## 10. Next phase (Git checkpoint) Ã¢â‚¬â€ only after student approval
+## 10. Next phase (Git checkpoint) — only after student approval
 
 1. Create `.gitignore` excluding `out/`, `*.class`, and `.vscode/`.
 2. Initialize the repository on `main`.
-3. Verify only the seven intended submission files plus `.gitignore` are staged.
+3. Verify only the intended submission files (src/, test/, run-tests.bat, AGENT_LOG.md, README.md) plus `.gitignore` are staged.
 4. Review staged changes before committing.
 5. Commit only after student approval.
 6. Configure/verify the GitHub remote and push only after separate approval.
 
 No remote URL is assumed and no GitHub repository is claimed to exist yet.
-No Git operations have been performed Ã¢â‚¬â€ every step above requires approval.
+No Git operations have been performed — every step above requires approval.
 
 ---
 
 ## 11. Final status confirmation (end of post-audit improvements)
 
-- **BST algorithms implemented** (Ã‚Â§5) and **audited PASS WITH NOTES** with no correctness defects (Ã‚Â§6).
-- **Post-audit:** two coverage-gap tests added; dead test setup removed; **existing assertions untouched** (Ã‚Â§6.3).
+- **BST algorithms implemented** (§5) and **audited PASS WITH NOTES** with no correctness defects (§6).
+- **Post-audit:** two coverage-gap tests added; dead test setup removed; **existing assertions untouched** (§6.3).
 - **Actual results: `javac` 0; LabTestRunner 58/58 pass exit 0; StudentBSTTest 24/24 pass exit 0; run-tests.bat exit 0. Combined 82/82.**
-- **`src/BSTNode.java` and `src/BinarySearchTree.java` SHA-256 identical to AUDIT hashes (Task 4) Ã¢â‚¬â€ implementation unchanged.**
+- **`src/BSTNode.java` and `src/BinarySearchTree.java` SHA-256 identical to AUDIT hashes (Task 4) — implementation unchanged.**
 - **No balancing, GUI, or external dependencies added.**
-- **No Git operations performed Ã¢â‚¬â€ ready for final Git review, not committed or pushed.**
+- **No Git operations performed — ready for final Git review, not committed or pushed.**
 
-**STOP Ã¢â‚¬â€ awaiting approval before the Git checkpoint.**
+---
+
+## 12. Final revision (2026-11-12, reviewed with Claude before submission)
+
+Every change below was made after the audit, with all prior assertions kept (no test weakened or removed).
+
+### 12.1 Defects found and fixed
+
+| # | Finding | Fix |
+|---|---|---|
+| 1 | **Traversal return type did not match the contract.** The lab contract says "Traversals / height: Return **values** in named traversal order", but `inOrder/preOrder/postOrder` returned keys. | `inOrder/preOrder/postOrder` now return `List<V>`. Added `inOrderKeys/preOrderKeys/postOrderKeys` (`List<K>`) so key ordering is still verified. The earlier "approved `List<K>`" decision (§3, §7 item 2) is **superseded** by this change. |
+| 2 | Existing tests asserted key lists via `inOrder()` etc. | Calls renamed to the `*Keys()` variants; every assertion and expected value is unchanged. |
+| 3 | No test for value-returning traversals. | Added `testTraversalValues` (7 checks) to `LabTestRunner`. |
+| 4 | Javadoc in `BinarySearchTree.java` contained literal `&gt;` / `&lt;` HTML entities. | Replaced with `>` / `<`; header comment updated to the new return types. |
+| 5 | `README.md` and `AGENT_LOG.md` had corrupted characters (UTF-8 saved through the wrong encoding: `â€”`, `â†’`, `Â§`, ...). | Re-decoded; arrows, dashes, section signs and tree diagrams restored. |
+| 6 | Audit task required comparing balanced vs sorted insertion, but only one 5-key sorted run existed. | Added `test/ComplexityAudit.java` (counts `compareTo` calls via a wrapper key, no change to `src/` logic). Results in README and §12.3. |
+| 7 | `run-tests.bat` / `.gitignore` were listed but missing from the supplied files. | Recreated; `run-tests.bat` now also runs `ComplexityAudit`. |
+
+### 12.2 Verification (actual, 2026-11-12, Java compile with `javac`)
+
+| Command | Result |
+|---|---|
+| `javac -d out src\*.java test\*.java` | exit 0 |
+| `java -ea -cp out LabTestRunner` | **65 passed, 0 failed**, exit 0 |
+| `java -ea -cp out StudentBSTTest` | **24 passed, 0 failed**, exit 0 |
+| `java -ea -cp out ComplexityAudit` | all checks passed, exit 0 |
+
+SHA-256 after revision: `src/BSTNode.java` `626024A9...C06A86D` (unchanged); `src/BinarySearchTree.java` `55D02221...2864154` (**changed** by items 1 and 4; the hash recorded in §6.4 belongs to the earlier version).
+
+### 12.3 Complexity evidence
+
+| n | Insert order | Height | `get(max)` compares | Build compares |
+|---|---|---|---|---|
+| 15 | balanced | 3 | 4 | 34 |
+| 15 | sorted | 14 | 15 | 105 |
+| 127 | balanced | 6 | 7 | 642 |
+| 127 | sorted | 126 | 127 | 8001 |
+| 1023 | balanced | 9 | 10 | 8194 |
+| 1023 | sorted | 1022 | 1023 | 522753 |
+
+- Lookup cost equals height + 1 comparisons: O(h). Balanced gives h = O(log n); sorted gives h = n - 1, so O(n) lookup and O(n^2) total build (n(n-1)/2 compares, exactly as measured).
+- `rangeSearch` (balanced, n = 1023, h = 9): k=1 -> 28 compares; k=10 -> 64; k=100 -> 432; k=1023 -> 4093. Cost tracks h + k, not n, for small ranges (pruning works).
+- Traversals visit each node once: O(n). Recursion depth equals height: O(h) stack, O(n) worst case.
+- Balancing (AVL / Red-Black) is a limitation, not implemented, as the lab specifies.
+
+### 12.4 rangeSearch(25, 60) trace (insert-only tree 40, 20, 70, 10, 30, 55, 85, 60)
+
+| Node | Action |
+|---|---|
+| 40 | 25 < 40 -> go left; 40 in [25, 60] -> collect; 60 > 40 -> go right |
+| 20 | 25 < 20 false -> **left subtree (10) pruned**; 20 below range, not collected; 60 > 20 -> go right |
+| 30 | go left (empty); collect 30; go right (empty) |
+| 70 | 25 < 70 -> go left; 70 > 60 so not collected; 60 > 70 false -> **right subtree (85) pruned** |
+| 55 | go left (empty); collect 55; go right |
+| 60 | collect 60 |
+
+Result values in order: p30, p40, p55, p60. Pruned branches: node 10 and node 85.
+
+### 12.5 Reflection
+
+- **Most careful pointer repair:** two-child deletion where the in-order successor has a right child (delete 40: successor 55, its right child 60 must be promoted into 55's old slot under 70). `deleteMin` returns `node.right` so 60 is reattached instead of lost.
+- **Evidence the sorted tree is linear-height:** ComplexityAudit - sorted insertion of n keys gives height n - 1 and `get(max)` needs n comparisons (n = 1023 -> height 1022, 1023 compares) versus height 9 and 10 compares for the same keys in balanced order.
+
+### 12.6 Status
+
+Ready for final Git review. Nothing committed or pushed.
